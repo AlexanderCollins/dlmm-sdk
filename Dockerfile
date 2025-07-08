@@ -1,9 +1,21 @@
 FROM node:20
-RUN mkdir dlmm-server
-WORKDIR /dlmm-server
-COPY package*.json ./
+
+# Create and set working directory
+WORKDIR /app
+
+# Copy package files from ts-client
+COPY ts-client/package*.json ./ts-client/
+
+# Change to the ts-client folder and install dependencies
+WORKDIR /app/ts-client
 RUN npm install
-COPY . .
+
+# Copy the remaining ts-client files and build the project
+COPY ts-client/ .
 RUN npm run build
+
+# Expose the port as defined in your ts-client app (e.g., 3000)
 EXPOSE 3000
-CMD ["npm", "start-server"]
+
+# Start the server using the appropriate npm script from package.json
+CMD ["npm", "run", "start-server"]
